@@ -313,6 +313,30 @@ server <- function(input, output) {
             return (df[df$Name == input$Name]) & (df[df$Month == input$Month,]) & (df[df$Day == input$Day]) & (df[df$Year == input$Year])
     })
     
+    
+    # ==================================================================
+    # ====== color palette ======
+    pal25 <- c(
+        "dodgerblue2", "#E31A1C", # red
+        "green4",
+        "#6A3D9A", # purple
+        "#FF7F00", # orange
+        "black", "gold1",
+        "skyblue2", "#FB9A99", # lt pink~~
+        "palegreen2",
+        "#CAB2D6", # lt purple
+        "#FDBF6F", # lt orange
+        "gray70", "khaki2",
+        "maroon", "orchid1", "deeppink1", "blue1", "steelblue4",
+        "darkturquoise", "green1", "yellow4", "yellow3",
+        "darkorange4", "brown"
+    )
+    
+    pal <- colorFactor(
+        palette = pal25,
+        domain = df5$Name
+    )
+    
     # ==================================================================
     # ====== outputs for ATLANTIC OVERVIEW ======
     #By Year
@@ -360,18 +384,29 @@ server <- function(input, output) {
     #
     #})
     
+    
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$map1 <- renderLeaflet({
         m <- leaflet() %>%
             addTiles() %>%
-            addCircleMarkers(data = df5, lng = ~Longitude, lat = ~Latitude)
+            addCircleMarkers(data = df5, 
+                             lng = ~Longitude, 
+                             lat = ~Latitude, 
+                             color = ~pal(df5$Name),
+                             stroke = FALSE, fillOpacity = 0.5,
+                             radius = ~df5$`Max Wind`/8)
     })
     # Pacific
     output$map2 <- renderLeaflet({
         m <- leaflet() %>%
             addTiles() %>%
-            addCircleMarkers(data = dfPacific5, lng = ~Longitude, lat = ~Latitude)
+            addCircleMarkers(data = dfPacific5, 
+                             lng = ~Longitude, 
+                             lat = ~Latitude, 
+                             color = ~pal(df5$Name), 
+                             stroke = FALSE, fillOpacity = 0.5,
+                             radius = ~df5$`Max Wind`/8)
     })
     
 }
