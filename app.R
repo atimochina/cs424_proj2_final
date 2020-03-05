@@ -237,9 +237,9 @@ ui <- dashboardPage(
                 tabName = "atlantic",
                 h2("Overview of Atlantic Hurricanes Since 2005"),
                 fluidRow(
-                    box(title="By Year", plotOutput("atlanticplot1",), width = 4),
-                    box(title="By Classification", plotOutput("atlanticplot2",), width = 4),
-                    box(title="By Hurricane Category", plotOutput("atlanticplot3",), width = 4)
+                    box(plotOutput("atlanticplot1",), width = 4),
+                    box(plotOutput("atlanticplot2",), width = 4),
+                    box(plotOutput("atlanticplot3",), width = 4)
                 ),
                 h2("Map of Atlantic Hurricanes in 2018"),
                 fluidRow(
@@ -253,9 +253,9 @@ ui <- dashboardPage(
             tabItem(tabName = "pacific",
                 h2("Overview of Pacific Hurricanes Since 2005"),
                 fluidRow(
-                    box(title="By Year", plotOutput("pacificplot1",), width = 4),
-                    box(title="By Classification", plotOutput("pacificplot2",), width = 4),
-                    box(title="By Hurricane Category", plotOutput("pacificplot3",), width = 4)
+                    box(plotOutput("pacificplot1",), width = 4),
+                    box(plotOutput("pacificplot2",), width = 4),
+                    box(plotOutput("pacificplot3",), width = 4)
                 ),
                 h2("Chart of Pacific Hurricanes"),
                 fluidRow(
@@ -348,17 +348,17 @@ server <- function(input, output) {
     # ====== outputs for ATLANTIC OVERVIEW ======
     #By Year
     output$atlanticplot1 <- renderPlot({
-        ggplot(df3, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Year")
+        ggplot(df3, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Year", title = "By Year")
     })
     
     #By Classification
     output$atlanticplot2 <- renderPlot({
-        ggplot(df3, aes(x=df3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification")
+        ggplot(df3, aes(x=df3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification", title = "By Classification")
     })
     
     #By Hurricane Category
     output$atlanticplot3 <- renderPlot({
-        ggplot(df4, aes(x=df4$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
+        ggplot(df4, aes(x=df4$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Category", title = "By Category")
     })
     
     # ========== Reactive Chart ==========
@@ -368,17 +368,17 @@ server <- function(input, output) {
     # ====== outputs for PACIFIC OVERVIEW ======
     #By Year
     output$pacificplot1 <- renderPlot({
-        ggplot(dfPacific3, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Year")
+        ggplot(dfPacific3, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Year", title = "By Year")
     })
     
     #By Classification
     output$pacificplot2 <- renderPlot({
-        ggplot(dfPacific3, aes(x=dfPacific3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification")
+        ggplot(dfPacific3, aes(x=dfPacific3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification", title = "By Classification")
     })
     
     #By Hurricane Category
     output$pacificplot3 <- renderPlot({
-        ggplot(dfPacific4, aes(x=dfPacific4$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
+        ggplot(dfPacific4, aes(x=dfPacific4$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Category", title = "By Category")
     })
     
     # ====== Reactive Tables ====== Needs to be fixed!
