@@ -7,6 +7,9 @@ library(stringr)
 library(shiny)
 library(shinydashboard)
 library(dplyr)
+library(hrbrthemes)
+library(gcookbook)
+library(tidyverse)
 
 # ============= ATLANTIC DATA =============
 df <- read.table("data/atlantic_clean.csv", header = TRUE, stringsAsFactors = FALSE, sep = c(",","[","]"))
@@ -238,15 +241,14 @@ ui <- dashboardPage(
                     box(title="By Classification", plotOutput("atlanticplot2",), width = 4),
                     box(title="By Hurricane Category", plotOutput("atlanticplot3",), width = 4)
                 ),
+                h2("Map of Atlantic Hurricanes in 2018"),
+                fluidRow(
+                    box(leafletOutput("map1", height = 700), width = 12, height = 700)
+                ),
                 h2("Chart of Atlantic Hurricanes"),
                 fluidRow(
                     box(tableOutput("tableAtlantic"), width = 12, height = 500)
                 ),
-                
-                h2("Map of Atlantic Hurricanes in 2018"),
-                fluidRow(
-                    box(leafletOutput("map1", height = 700), width = 12, height = 700)
-                )
             ),
             tabItem(tabName = "pacific",
                 h2("Overview of Pacific Hurricanes Since 2005"),
@@ -346,17 +348,17 @@ server <- function(input, output) {
     # ====== outputs for ATLANTIC OVERVIEW ======
     #By Year
     output$atlanticplot1 <- renderPlot({
-        ggplot(df3, aes(x=Year)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Year")
+        ggplot(df3, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Year")
     })
     
     #By Classification
     output$atlanticplot2 <- renderPlot({
-        ggplot(df3, aes(x=df3$`Status of System`)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Hurricane Classification")
+        ggplot(df3, aes(x=df3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification")
     })
     
     #By Hurricane Category
     output$atlanticplot3 <- renderPlot({
-        ggplot(df4, aes(x=df4$`Hurricane Category`)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
+        ggplot(df4, aes(x=df4$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
     })
     
     # ========== Reactive Chart ==========
@@ -366,17 +368,17 @@ server <- function(input, output) {
     # ====== outputs for PACIFIC OVERVIEW ======
     #By Year
     output$pacificplot1 <- renderPlot({
-        ggplot(dfPacific3, aes(x=Year)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Year")
+        ggplot(dfPacific3, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Year")
     })
     
     #By Classification
     output$pacificplot2 <- renderPlot({
-        ggplot(dfPacific3, aes(x=dfPacific3$`Status of System`)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Hurricane Classification")
+        ggplot(dfPacific3, aes(x=dfPacific3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification")
     })
     
     #By Hurricane Category
     output$pacificplot3 <- renderPlot({
-        ggplot(dfPacific4, aes(x=dfPacific4$`Hurricane Category`)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
+        ggplot(dfPacific4, aes(x=dfPacific4$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
     })
     
     # ====== Reactive Tables ====== Needs to be fixed!
@@ -396,7 +398,7 @@ server <- function(input, output) {
         m <- m <- leaflet(df5) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addLegend("bottomright", pal = pal, values = df5$Name, title = "Hurricane Names", opacity = 1) %>%
+            addLegend("bottomright", pal = pal, values = df5$Name, opacity = 1) %>%
             addCircleMarkers(data = df5,
                              lng = ~Longitude,
                              lat = ~Latitude,
@@ -411,7 +413,7 @@ server <- function(input, output) {
         m <- leaflet(dfPacific5) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addLegend("bottomright", pal = pal2, values = dfPacific5$Name, title = "Hurricane Names", opacity = 1) %>%
+            addLegend("bottomright", pal = pal2, values = dfPacific5$Name, opacity = 1) %>%
             addCircleMarkers(data = dfPacific5,
                              lng = ~Longitude,
                              lat = ~Latitude,
