@@ -337,6 +337,11 @@ server <- function(input, output) {
         domain = df5$Name
     )
     
+    pal2 <- colorFactor(
+        palette = pal25,
+        domain = dfPacific5$Name
+    )
+    
     # ==================================================================
     # ====== outputs for ATLANTIC OVERVIEW ======
     #By Year
@@ -388,25 +393,33 @@ server <- function(input, output) {
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$map1 <- renderLeaflet({
-        m <- leaflet() %>%
+        m <- m <- leaflet(df5) %>%
             addTiles() %>%
-            addCircleMarkers(data = df5, 
-                             lng = ~Longitude, 
-                             lat = ~Latitude, 
+            addProviderTiles(providers$CartoDB.Voyager) %>%
+            addLegend("bottomright", pal = pal, values = df5$Name, title = "Hurricane Names", opacity = 1) %>%
+            addCircleMarkers(data = df5,
+                             lng = ~Longitude,
+                             lat = ~Latitude,
                              color = ~pal(df5$Name),
-                             stroke = FALSE, fillOpacity = 0.5,
-                             radius = ~df5$`Max Wind`/8)
+                             fillOpacity = 0.5,
+                             popup = (paste(df5$Name, "<br>",
+                                            df5$`Max Wind`, "mph")),
+                             radius = df5$`Max Wind`/8)
     })
     # Pacific
     output$map2 <- renderLeaflet({
-        m <- leaflet() %>%
+        m <- leaflet(dfPacific5) %>%
             addTiles() %>%
-            addCircleMarkers(data = dfPacific5, 
-                             lng = ~Longitude, 
-                             lat = ~Latitude, 
-                             color = ~pal(df5$Name), 
-                             stroke = FALSE, fillOpacity = 0.5,
-                             radius = ~df5$`Max Wind`/8)
+            addProviderTiles(providers$CartoDB.Voyager) %>%
+            addLegend("bottomright", pal = pal2, values = dfPacific5$Name, title = "Hurricane Names", opacity = 1) %>%
+            addCircleMarkers(data = dfPacific5,
+                             lng = ~Longitude,
+                             lat = ~Latitude,
+                             color = ~pal2(dfPacific5$Name),
+                             fillOpacity = 0.5,
+                             popup = (paste(dfPacific5$Name, "<br>",
+                                            dfPacific5$`Max Wind`, "mph")),
+                             radius = dfPacific5$`Max Wind`/8)
     })
     
 }
