@@ -245,7 +245,7 @@ ui <- dashboardPage(
                 
                 h2("Map of Atlantic Hurricanes in 2018"),
                 fluidRow(
-                    box(leafletOutput("map1",), width = 12, height = 500)
+                    box(leafletOutput("map1", height = 700), width = 12, height = 700)
                 )
             ),
             tabItem(tabName = "pacific",
@@ -261,7 +261,7 @@ ui <- dashboardPage(
                 ),
                 h2("Map of Pacific Hurricanes in 2018"),
                 fluidRow(
-                    box(leafletOutput("map2",), width = 12, height = 500)
+                    box(leafletOutput("map2", height = 700), width = 12, height = 700)
                 )
             ),
             tabItem(
