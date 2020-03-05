@@ -353,7 +353,8 @@ server <- function(input, output) {
     
     #By Classification
     output$atlanticplot2 <- renderPlot({
-        ggplot(df3, aes(x=df3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification", title = "By Classification")
+        ggplot(df3, aes(x=df3$`Status of System`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(y= "Number of Hurricanes", x = "Hurricane Classification", title = "By Classification",
+                                                                                                     subtitle = "HU - Hurricane")
     })
     
     #By Hurricane Category
