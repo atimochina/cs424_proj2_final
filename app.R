@@ -42,7 +42,8 @@ ui <- dashboardPage(
                 ),
                 h2("Chart of Atlantic Hurricanes"),
                 fluidRow(
-                    box(tableOutput("tableAtlantic"), width = 12, height = 500)
+                    box(tableOutput("tableAtlantic"), width = 12, height = 500),
+                    box(dateRangeInput("date",strong("Date range"), start = "2005-01-01", end = "2018-12-31", min = "2005-01-01", max = "2018-12-31"))
                 ),
                 
                 h2("Map of Atlantic Hurricanes in 2018"),

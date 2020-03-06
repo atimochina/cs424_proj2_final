@@ -21,10 +21,12 @@ for i in range(0,len(list_of_hurricanes)):
     if start - finish == 0:
         hurricane_data[start].insert(0,list_of_hurricanes[i][0])
         hurricane_data[start].insert(0,list_of_hurricanes[i][1])
+        hurricane_data[start].insert(0,list_of_hurricanes[i][2])
     else:
         for j in range(start,finish + 1):
             hurricane_data[j].insert(0,list_of_hurricanes[i][0])
             hurricane_data[j].insert(0,list_of_hurricanes[i][1])
+            hurricane_data[j].insert(0,list_of_hurricanes[i][2])
 
     start = finish + 1
 
@@ -58,10 +60,12 @@ for i in range(0,len(list_of_hurricanes1)):
     if start - finish == 0:
         hurricane_data1[start].insert(0,list_of_hurricanes1[i][0])
         hurricane_data1[start].insert(0,list_of_hurricanes1[i][1])
+        hurricane_data1[start].insert(0,list_of_hurricanes1[i][2])
     else:
         for j in range(start,finish + 1):
             hurricane_data1[j].insert(0,list_of_hurricanes1[i][0])
             hurricane_data1[j].insert(0,list_of_hurricanes1[i][1])
+            hurricane_data1[j].insert(0,list_of_hurricanes1[i][2])
 
     start = finish + 1
 
