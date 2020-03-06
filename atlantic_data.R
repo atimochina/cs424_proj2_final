@@ -114,10 +114,9 @@ df$Name <- df$NewName
 df$NewName <- NULL
 
 #==== Categorizing hurricanes based on max wind speed ======
-df$'Hurricane Category' <- cut(df$`Max Wind`, c(0,74,96,111,130,157), include.lowest = T)
-levels(df$'Hurricane Category') = c(NA,1, 2, 3, 4, 5)
-df$`Hurricane Category` <- as.numeric(df$`Hurricane Category`)
-
+df$'Hurricane Category' <- cut(df$`Max Wind`, c(0,38,74,96,111,130,157), include.lowest = T)
+levels(df$'Hurricane Category') = c("TD", "TS", "C1", "C2", "C3", "C4", "C5")
+df$`Hurricane Category` <- as.character(df$`Hurricane Category`)
 dfAtlantic <- df
 
 # list of months, days, and years -- using unique
@@ -128,3 +127,4 @@ listNameAtlantic <- as.character(unique(df$Name))
 
 save(dfAtlantic, listYearAtlantic, listNameAtlantic,
      listMonthAtlantic, listDayAtlantic, file = "atlantic_new.RData")
+
