@@ -7,6 +7,9 @@ library(stringr)
 library(shiny)
 library(shinydashboard)
 library(dplyr)
+library(hrbrthemes)
+library(gcookbook)
+library(tidyverse)
 
 # loading data from preprocessed file 
 # that was run to save data in RData format
@@ -25,6 +28,7 @@ ui <- dashboardPage(
     ), # end sidebar
     
     body <- dashboardBody(
+
         h2("Wind Speed and Pressure Information of Atlantic and Pacific Hurricanes", align = "center"),
         fluidRow( 
             column(6,
@@ -67,6 +71,7 @@ ui <- dashboardPage(
                               box(title="Overview of Atlantic Hurricanes By Category", plotOutput("atlantic_plot2"), width = 12, height = 450)
                           )
                    )
+
             ),
             #PACIFIC HALF
             column(6, 
@@ -108,7 +113,26 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
+   
+    # ====== MAP ====== Needs reactive for maps
+    # Atlantic
+    output$atlantic_map <- renderLeaflet({
+        m <- m <- leaflet(dfAtlantic) %>%
+            addTiles() %>%
+            addProviderTiles(providers$CartoDB.Voyager) %>%
+            addLegend("bottomright", pal = pal, values = df5$Name, opacity = 1) %>%
+            addCircleMarkers(data = df5,
+                             lng = ~Longitude,
+                             lat = ~Latitude,
+                             color = ~pal(df5$Name),
+                             fillOpacity = 0.5,
+                             popup = (paste(df5$Name, "<br>",
+                                            df5$`Max Wind`, "mph")),
+                             radius = df5$`Max Wind`/8)
+    })
+    # Pacific
     
+
 }
 
 shinyApp(ui = ui, server = server)
