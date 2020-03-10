@@ -120,15 +120,15 @@ server <- function(input, output) {
         m <- m <- leaflet(dfAtlantic) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addLegend("bottomright", pal = pal, values = df5$Name, opacity = 1) %>%
-            addCircleMarkers(data = df5,
+            addLegend("bottomright", pal = pal, values = dfAtlantic$Name, opacity = 1) %>%
+            addCircleMarkers(data = dfAtlantic,
                              lng = ~Longitude,
                              lat = ~Latitude,
-                             color = ~pal(df5$Name),
+                             color = ~pal(dfAtlantic$Name),
                              fillOpacity = 0.5,
-                             popup = (paste(df5$Name, "<br>",
-                                            df5$`Max Wind`, "mph")),
-                             radius = df5$`Max Wind`/8)
+                             popup = (paste(dfAtlantic$Name, "<br>",
+                                            dfAtlantic$`Max Wind`, "mph")),
+                             radius = dfAtlantic$`Max Wind`/8)
     })
     # Pacific
     
