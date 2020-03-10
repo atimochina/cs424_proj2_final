@@ -124,7 +124,7 @@ server <- function(input, output) {
             addCircleMarkers(data = dfAtlantic,
                              lng = ~Longitude,
                              lat = ~Latitude,
-                             color = ~pal(df5$Name),
+                             color = ~pal(dfAtlantic$Name),
                              fillOpacity = 0.5,
                              popup = (paste(dfAtlantic$Name, "<br>",
                                             dfAtlantic$`Max Wind`, "mph")),
