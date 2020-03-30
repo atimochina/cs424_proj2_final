@@ -92,7 +92,44 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
-    
+    # ======== Reactive ========
+    # Selection (selectA) - select all, unselect all
+    # Note: Select All means all buttons in option(below) is selected or not
+    selectReact <- reactive({
+        #if(selectA == `Select All`){
+        #    return
+        #} else {
+        #    return
+        #}
+    })
+    # Show By (optionA) - Top Ten Overall, Since 2005
+    optionReact <- reactive({
+        if(optionA == `Top Ten Overall` && optionA != `Since 2005`){
+            return
+        }
+        else if (optionA != `Top Ten Overall` && optionA == `Since 2005`){
+            return
+        }
+        else if (optionA != `Top Ten Overall` && optionA != `Since 2005`){
+            return
+        }
+    })
+    # Order By (filterA) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
+    filterReact <- reactive({
+        #
+        if(filterA == `Chronologically`){
+            return (dfAtlantic[sort(dfAtlantic$Date, factorsAsCharacter = TRUE)])
+        }
+        else if(filterA == `Alphabetically`){
+            return (dfAtlantic[sort(dfAtlantic$Name, factorsAsCharacter = TRUE)])
+        }
+        else if(filterA == `Max Wind Speed`){
+            return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE)])
+        }
+        else if(filterA == `Minimum Pressure`){
+            return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE)])
+        }
+    })
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
         ggplot(dfAtlantic, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Year",
@@ -119,12 +156,12 @@ server <- function(input, output) {
                                                                                                                    y= "Number of Hurricanes", x = "Hurricane Category")
     })
     
-    
-    
-    
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$atlantic_map <- renderLeaflet({
+        optionData <- optionReact
+        filterData <- filterReact
+        
         m <- m <- leaflet(dfAtlantic) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
@@ -138,8 +175,6 @@ server <- function(input, output) {
                                             dfAtlantic$`Max Wind`, "mph")),
                              radius = dfAtlantic$`Max Wind`/8)
     })
-    # Pacific
-    
     
 }
 
