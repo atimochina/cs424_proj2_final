@@ -1,4 +1,4 @@
-#new processing of atlantic data
+#new processing of pacific data
 #libraries
 library(ggplot2)
 library(lubridate)
@@ -6,8 +6,8 @@ library(leaflet)
 library(stringr)
 library(dplyr)
 
-# ============= ATLANTIC DATA =============
-df <- read.table("data/atlantic_clean.csv", header = TRUE, stringsAsFactors = FALSE, sep = c(",","[","]"),row.names = NULL)
+# ============= PACIFIC DATA =============
+df <- read.table("data/northPacific_clean.csv", header = TRUE, stringsAsFactors = FALSE, sep = c(",","[","]"),row.names = NULL)
 df$X23 <- NULL
 names(df)[1] <- "Number of Entries"
 names(df)[2] <- "Name"
@@ -98,14 +98,14 @@ for(i in 1:length(df$`Number of Entries`)){
   
   if(i <= finish){
     if(df$Name[i] == 'UNNAMED'){
-      df$NewName[i] <- paste('HU Atlantic ',count)
+      df$NewName[i] <- paste('HU Pacific ',count)
     }
     else{
       df$NewName[i] <- df$Name[i]
     }
   }
   if(i == finish){
-    if(df$NewName[i] == paste('HU Atlantic ', count)){
+    if(df$NewName[i] == paste('HU Pacific ', count)){
       count = count + 1
     }
     finish = finish + df$`Number of Entries`[i+1]
@@ -121,10 +121,10 @@ df$`Hurricane Category` <- as.character(df$`Hurricane Category`)
 
 
 # list of months, days, and years -- using unique
-listYearAtlantic <- as.numeric(unique(df$Year))
-listMonthAtlantic <- as.character(unique(df$Month))
-listDayAtlantic <- sort(as.numeric(unique(df$Day)), decreasing = FALSE)
-listNameAtlantic <- as.character(unique(df$Name))
+listYearPacific <- as.numeric(unique(df$Year))
+listMonthPacific <- as.character(unique(df$Month))
+listDayPacific <- sort(as.numeric(unique(df$Day)), decreasing = FALSE)
+listNamePacific <- as.character(unique(df$Name))
 
 
 #Creating data frames for line graphs
@@ -155,9 +155,9 @@ days$`Max Wind`[days$`Max Wind` == -Inf] <- NA
 days$`Min Pressure`[days$`Min Pressure` == Inf] <- NA
 days$`Min Pressure`[days$`Min Pressure` == -Inf] <- NA
 
-atlanticDaysOfYearDF <- days
-dfAtlantic <- subset(df, select = c("Name","Date","Min Pressure","Max Wind","Hurricane Category","Basin","ATCF","Hour","Minute","Latitude","Longitude","Month","Day","Year","Days of Year"))
+pacificDaysOfYearDF <- days
+dfPacific <- subset(df, select = c("Name","Date","Min Pressure","Max Wind","Hurricane Category","Basin","ATCF","Hour","Minute","Latitude","Longitude","Month","Day","Year","Days of Year"))
 
-save(atlanticDaysOfYearDF,dfAtlantic, listYearAtlantic, listNameAtlantic,
-     listMonthAtlantic, listDayAtlantic, file = "atlantic_new.RData")
+save(pacificDaysOfYearDF,dfPacific, listYearPacific, listNamePacific,
+     listMonthPacific, listDayPacific, file = "pacific_new.RData")
 
