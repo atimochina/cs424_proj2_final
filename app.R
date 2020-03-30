@@ -219,8 +219,8 @@ ui <- dashboardPage(
     sidebar <- dashboardSidebar(
         width = 265,
         sidebarMenu(
-            menuItem("Atlantic Hurricanes", tabName = "atlantic", icon = icon("tint")),
-            menuItem("Pacific Hurricanes", tabName = "pacific", icon = icon("tint")),
+            menuItem("Overview", tabName = "overview", icon = icon("chart-bar")),
+            menuItem("Map View", tabName = "map", icon = icon("map-marked-alt")),
             menuItem("About", tabName = "about", icon = icon("info")),
             
             # drop down boxes - Year, Name, Date (Month and Day)
@@ -233,39 +233,46 @@ ui <- dashboardPage(
     
     body <- dashboardBody(
         tabItems(
+            
+            # OVERVIEW TAB
             tabItem(
-                tabName = "atlantic",
-                h2("Overview of Atlantic Hurricanes Since 2005"),
+                tabName = "overview",
+                h2("Overview of Atlantic Hurricanes"),
                 fluidRow(
-                    box(plotOutput("atlanticplot1",), width = 4),
-                    box(plotOutput("atlanticplot2",), width = 4),
-                    box(plotOutput("atlanticplot3",), width = 4)
+                    box(plotOutput("atlanticplot1",), width = 6),
+                    box(plotOutput("atlanticplot2",), width = 6)
                 ),
-                h2("Map of Atlantic Hurricanes in 2018"),
+                h2("Overview of Pacific Hurricanes"),
                 fluidRow(
-                    box(leafletOutput("map1", height = 700), width = 12, height = 700)
-                ),
-                h2("Chart of Atlantic Hurricanes"),
-                fluidRow(
-                    box(tableOutput("tableAtlantic"), width = 12, height = 500)
+                    box(title = "By Year", width = 6),
+                    box(title = "By Category", width = 6)
                 ),
             ),
-            tabItem(tabName = "pacific",
-                h2("Overview of Pacific Hurricanes Since 2005"),
+            
+            # MAP VIEW TAB
+            tabItem(tabName = "map",
+                # LINE GRAPH 1    
                 fluidRow(
-                    box(plotOutput("pacificplot1",), width = 4),
-                    box(plotOutput("pacificplot2",), width = 4),
-                    box(plotOutput("pacificplot3",), width = 4)
+                    box(title = "Atlantic Line Graph", width = 12)
                 ),
-                h2("Chart of Pacific Hurricanes"),
+                
+                # SINGLE MAP WITH ATLANTIC LIST/OPTIONS AND PACIFIC LIST/OPTIONS
                 fluidRow(
-                    box(tableOutput("tablePacific"), width = 12, height = 500)
+                    box(title = "Atlantic Map Options", width = 1),
+                    box(title = "Atlantic Hurricanes List", width = 2),
+                    box(title = "Atlantic+Pacific Map", leafletOutput("map1"), width = 6),
+                    box(title = "Pacific Map Options", width = 1),
+                    box(title = "Pacific Hurricanes List", width = 2)
                 ),
-                h2("Map of Pacific Hurricanes in 2018"),
+                
+                # LINE GRAPH 2
                 fluidRow(
-                    box(leafletOutput("map2", height = 700), width = 12, height = 700)
+                    box(title = "Pacific Line Graph", width = 12)
                 )
+                    
             ),
+            
+            # ABOUT TAB
             tabItem(
                 tabName = "about",
                 h2("Project Details"),
