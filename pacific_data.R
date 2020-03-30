@@ -155,9 +155,29 @@ days$`Max Wind`[days$`Max Wind` == -Inf] <- NA
 days$`Min Pressure`[days$`Min Pressure` == Inf] <- NA
 days$`Min Pressure`[days$`Min Pressure` == -Inf] <- NA
 
+max = c()
+for(i in 1:length(listNamePacific)){
+  max[i] = 0;
+  
+  for(j in 1:length(df$Name)){
+    if(listNamePacific[i] == df$Name[j]){
+      if(df$`Max Wind`[j] >= max[i]){
+        max[i] = df$`Max Wind`[j]
+      }
+    }
+  }
+}
+#Above loop makes max vector associated with list of names
+#from there check list for top ten
+topTenPacific = data.frame("HU" = listNamePacific, "MAX" = max, stringsAsFactors = FALSE)
+topTenPacific <- topTenPacific[order(-topTenPacific$MAX),]
+topTenPacific <- topTenPacific[1:10,]
+topTenListPacific = topTenPacific[1:10,1]
+
 pacificDaysOfYearDF <- days
 dfPacific <- subset(df, select = c("Name","Date","Min Pressure","Max Wind","Hurricane Category","Basin","ATCF","Hour","Minute","Latitude","Longitude","Month","Day","Year","Days of Year"))
+dfPacific10 <- dfPacific[dfPacific$Name %in% topTenListPacific,]
 
 save(pacificDaysOfYearDF,dfPacific, listYearPacific, listNamePacific,
-     listMonthPacific, listDayPacific, file = "pacific_new.RData")
+     listMonthPacific, listDayPacific,topTenListPacific,topTenPacific,dfPacific10, file = "pacific_new.RData")
 
