@@ -155,9 +155,29 @@ days$`Max Wind`[days$`Max Wind` == -Inf] <- NA
 days$`Min Pressure`[days$`Min Pressure` == Inf] <- NA
 days$`Min Pressure`[days$`Min Pressure` == -Inf] <- NA
 
+max = c()
+for(i in 1:length(listNameAtlantic)){
+  max[i] = 0;
+  
+  for(j in 1:length(df$Name)){
+    if(listNameAtlantic[i] == df$Name[j]){
+      if(df$`Max Wind`[j] >= max[i]){
+        max[i] = df$`Max Wind`[j]
+      }
+    }
+  }
+}
+#Above loop makes max vector associated with list of names
+#from there check list for top ten
+topTenAtlantic = data.frame("HU" = listNameAtlantic, "MAX" = max, stringsAsFactors = FALSE)
+topTenAtlantic <- topTenAtlantic[order(-topTenAtlantic$MAX),]
+topTenAtlantic <- topTenAtlantic[1:10,]
+topTenListAtlantic = topTenAtlantic[1:10,1]
+
 atlanticDaysOfYearDF <- days
 dfAtlantic <- subset(df, select = c("Name","Date","Min Pressure","Max Wind","Hurricane Category","Basin","ATCF","Hour","Minute","Latitude","Longitude","Month","Day","Year","Days of Year"))
+dfAtlantic10 <- dfAtlantic[dfAtlantic$Name %in% topTenListAtlantic,]
 
 save(atlanticDaysOfYearDF,dfAtlantic, listYearAtlantic, listNameAtlantic,
-     listMonthAtlantic, listDayAtlantic, file = "atlantic_new.RData")
+     listMonthAtlantic, listDayAtlantic, dfAtlantic10, topTenAtlantic, topTenListAtlantic, file = "atlantic_new.RData")
 
