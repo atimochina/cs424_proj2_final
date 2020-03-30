@@ -14,6 +14,7 @@ library(tidyverse)
 # loading data from preprocessed file 
 # that was run to save data in RData format
 load("atlantic_new.RData")
+load("pacific_new.RData")
 
 #================================ UI ===================================
 ui <- dashboardPage(
