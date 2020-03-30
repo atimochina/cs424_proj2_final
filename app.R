@@ -133,7 +133,7 @@ server <- function(input, output) {
             return (dfAtlantic) # all hurricanes
         }
         else if(intput$ListA == "Top 10"){
-            return () # return top 10 specific hurricane dataframe
+            return (dfAtlantic10) # return top 10 specific hurricane dataframe
         }
         else{
             return (dfAtlantic[dfAtlantic$Name == input$ListA]) #specific hurricanes
@@ -173,7 +173,7 @@ server <- function(input, output) {
             return (dfPacific) # all hurricanes
         }
         else if(intput$ListP == "Top 10"){
-            return () # return top 10 specific hurricane dataframe
+            return (dfPacific10) # return top 10 specific hurricane dataframe
         }
         else{
             return (dfPacific[dfPacific$Name == input$ListP]) #specific hurricanes
