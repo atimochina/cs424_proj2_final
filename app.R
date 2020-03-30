@@ -206,6 +206,25 @@ server <- function(input, output) {
             subtitle = "1949-present",
             y= "Number of Hurricanes", x = "Hurricane Category")
     }) 
+    #LINE GRAPH PLOTS
+    #max wind
+    output$line1 <- renderPlot({
+        ggplot() +
+            geom_line(data = atlanticDaysOfYearDF[!is.na(atlanticDaysOfYearDF$`Max Wind`),],aes(x = days, y = `Max Wind`, group = 1, color = "Atlantic"))+
+            geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Max Wind`),],aes(x = days, y = `Max Wind`, group = 1, color = "Pacific"))+
+            scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
+            labs(x = "Days in Year", y = "Wind Speed", title = "Maximum Wind Speed of Hurricane vs. Day in a Year") +
+            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
+    })
+    #min pressure
+    output$line2 <- renderPlot({
+        ggplot() +
+            geom_line(data = atlanticDaysOfYearDF[!is.na(atlanticDaysOfYearDF$`Min Pressure`),],aes(x = days, y = `Min Pressure`, group = 1, color = "Atlantic"))+
+            geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Min Pressure`),] ,aes(x = days, y = `Min Pressure`, group = 1, color = "Pacific"))+
+            scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
+            labs(x = "Days in Year", y = "Wind Speed", title = "Minimum Pressure of Hurricane vs. Day in a Year") +
+            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
+    })
     
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
