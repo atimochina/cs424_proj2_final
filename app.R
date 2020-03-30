@@ -26,11 +26,11 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Overview", tabName = "overview", icon = icon("chart-bar")),
             menuItem("Map View", tabName = "map", icon = icon("map-marked-alt")),
-            menuItem("About", tabName = "about", icon = icon("info"))
+            menuItem("About", tabName = "about", icon = icon("info")),
             
             # NEED TO FIX 
             # drop down boxes - Year, Name, Date (Month and Day)
-            #selectInput("Name", "Select Name", c("Summary", listNameAtlantic, listNamePacific), selected = "Summary"),
+            selectInput("Name", "Select Name", c("Summary", listNameAtlantic, listNamePacific), selected = "Summary")
             #selectInput("Month", "Select Month", c("Summary", listMonthAtlantic, listMonthPacific), selected = "Summary"),
             #selectInput("Day", "Select Day", c("Summary", listDayAtlantic, listDayPacific), selected = "Summary"),
             #selectInput("Year", "Select Year", c("Summary", listYearAtlantic, listYearPacific), selected = "Summary")
@@ -50,7 +50,7 @@ ui <- dashboardPage(
                     box(htmlOutput("catInfo1"), status = "primary", width = 4),
                     box(htmlOutput("catInfo2"), status = "primary", width = 2)
                 ),
-            
+                
                 fluidRow(
                     box(plotOutput("plot1",), width = 7),
                     box(plotOutput("plot2",), width = 5)
@@ -65,7 +65,8 @@ ui <- dashboardPage(
             tabItem(tabName = "map",
                     # LINE GRAPH 1
                     fluidRow(
-                        box(title = "Atlantic Line Graph", width = 12),
+                        box(width = 12,
+                            plotOutput("line1"))
                     ),
                     
                     # SINGLE MAP WITH ATLANTIC LIST/OPTIONS AND PACIFIC LIST/OPTIONS
@@ -79,7 +80,8 @@ ui <- dashboardPage(
                     
                     # LINE GRAPH 2
                     fluidRow(
-                        box(title = "Pacific Line Graph", width = 12)
+                        box( width = 12,
+                             plotOutput("line2"))
                     )
                     
             ),
@@ -101,6 +103,47 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
+    
+    # ======== Reactive ========
+    # Selection (selectA) - select all, unselect all
+    # Note: Select All means all buttons in option(below) is selected or not
+    selectReact <- reactive({
+        #if(selectA == `Select All`){
+        #    return
+        #} else {
+        #    return
+        #}
+    })
+    # Show By (optionA) - Top Ten Overall, Since 2005
+    nameReact <- reactive({
+        # Testing
+        if(input$Option == "Summary"){
+            return (dfAtlantic)
+        }
+        else if(input$Name == listNameAtlantic){
+            return (dfAtlantic[dfAtlantic$Name == input$Name,])
+        }
+        else if(input$Name == listNamePacific){
+            return (dfPacific[dfPacific$Name == input$Name,])
+        }
+    })
+    # Order By (filterA) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
+    filterReact <- reactive({
+        #
+        if(filterA == `Chronologically`){
+            return (dfAtlantic[sort(dfAtlantic$Date, factorsAsCharacter = TRUE)])
+        }
+        else if(filterA == `Alphabetically`){
+            return (dfAtlantic[sort(dfAtlantic$Name, factorsAsCharacter = TRUE)])
+        }
+        else if(filterA == `Max Wind Speed`){
+            return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE)])
+        }
+        else if(filterA == `Minimum Pressure`){
+            return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE)])
+        }
+    })
+    
     
     #INFOBOXES
     output$numATL <- renderText(length(unique(dfAtlantic$Name)))
@@ -124,7 +167,7 @@ server <- function(input, output) {
             "Category 5 <b>(C5)</b>: >156 mph"
         )
     ))
-
+    
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
         ggplot(dfAtlantic, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Year",
@@ -134,29 +177,51 @@ server <- function(input, output) {
     
     output$plot2 <- renderPlot({
         ggplot(dfAtlantic, aes(x=dfAtlantic$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Classification",
-                                                                                          subtitle = "1851-present",
-                                                                                          y= "Number of Hurricanes", x = "Hurricane Classification")
+                                                                                                                     subtitle = "1851-present",
+                                                                                                                     y= "Number of Hurricanes", x = "Hurricane Classification")
     })
     
     #PACIFIC OVERVIEW PLOTS
     output$plot3 <- renderPlot({
         ggplot(dfPacific, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Year",
-                                                                                          subtitle = "1949-present",
-                                                                                          y= "Number of Hurricanes", x = "Year")
+                                                                                         subtitle = "1949-present",
+                                                                                         y= "Number of Hurricanes", x = "Year")
     })
     
     output$plot4 <- renderPlot({
         ggplot(dfPacific, aes(x=dfPacific$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Classification",
-                                                                                                                     subtitle = "1949-present",
-                                                                                                                     y= "Number of Hurricanes", x = "Hurricane Classification")
+                                                                                                                   subtitle = "1949-present",
+                                                                                                                   y= "Number of Hurricanes", x = "Hurricane Classification")
+    })
+    
+    #LINE GRAPH PLOTS
+    #max wind
+    output$line1 <- renderPlot({
+        ggplot() +
+            geom_line(data = atlanticDaysOfYearDF[!is.na(atlanticDaysOfYearDF$`Max Wind`),],aes(x = days, y = `Max Wind`, group = 1, color = "Atlantic"))+
+            geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Max Wind`),],aes(x = days, y = `Max Wind`, group = 1, color = "Pacific"))+
+            scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
+            labs(x = "Days in Year", y = "Wind Speed", title = "Maximum Wind Speed of Hurricane vs. Day in a Year") +
+            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
+    })
+    #min pressure
+    output$line2 <- renderPlot({
+        ggplot() +
+            geom_line(data = atlanticDaysOfYearDF[!is.na(atlanticDaysOfYearDF$`Min Pressure`),],aes(x = days, y = `Min Pressure`, group = 1, color = "Atlantic"))+
+            geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Min Pressure`),] ,aes(x = days, y = `Min Pressure`, group = 1, color = "Pacific"))+
+            scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
+            labs(x = "Days in Year", y = "Wind Speed", title = "Minimum Pressure of Hurricane vs. Day in a Year") +
+            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
     })
     
     
     
-   
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$atlantic_map <- renderLeaflet({
+        #nameData <- nameReact
+        filterData <- filterReact
+        
         m <- m <- leaflet(dfAtlantic) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
@@ -170,9 +235,7 @@ server <- function(input, output) {
                                             dfAtlantic$`Max Wind`, "mph")),
                              radius = dfAtlantic$`Max Wind`/8)
     })
-    # Pacific
     
-
 }
 
 shinyApp(ui = ui, server = server)
