@@ -65,7 +65,7 @@ ui <- dashboardPage(
                     fluidRow(
                         box(title = "Atlantic Map Options", width = 1),
                         box(title = "Atlantic Hurricanes List", width = 2),
-                        box(title = "Atlantic+Pacific Map", width = 6),
+                        box(title = "Atlantic+Pacific Map", width = 6, leafletOutput("atlantic_map", height = 250)), # Testing map reactive for a bit
                         box(title = "Pacific Map Options", width = 1),
                         box(title = "Pacific Hurricanes List", width = 2)
                     ),
@@ -103,17 +103,17 @@ server <- function(input, output) {
         #}
     })
     # Show By (optionA) - Top Ten Overall, Since 2005
-    optionReact <- reactive({
-        if(optionA == `Top Ten Overall` && optionA != `Since 2005`){
-            return
-        }
-        else if (optionA != `Top Ten Overall` && optionA == `Since 2005`){
-            return
-        }
-        else if (optionA != `Top Ten Overall` && optionA != `Since 2005`){
-            return
-        }
-    })
+    #optionReact <- reactive({
+    #    if(optionA == `Top Ten Overall` && optionA != `Since 2005`){
+    #        return
+    #    }
+    #    else if (optionA != `Top Ten Overall` && optionA == `Since 2005`){
+    #        return
+    #    }
+    #    else if (optionA != `Top Ten Overall` && optionA != `Since 2005`){
+    #        return
+    #    }
+    #})
     # Order By (filterA) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterReact <- reactive({
         #
@@ -159,7 +159,7 @@ server <- function(input, output) {
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$atlantic_map <- renderLeaflet({
-        optionData <- optionReact
+        #optionData <- optionReact
         filterData <- filterReact
         
         m <- m <- leaflet(dfAtlantic) %>%
