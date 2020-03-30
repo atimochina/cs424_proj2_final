@@ -89,8 +89,10 @@ ui <- dashboardPage(
                 tabName = "about",
                 h2("Project Details"),
                 h3("Dashboard by Angela Timochina, Amy Ngo, and Desiree Murray for CS 424 at UIC"),
+                h3("Created using RStudio and Shiny with shinydashboard, ggplot2, lubridate, stringr, dplyr and leaflet libraries"),
                 h3("Data from the Atlantic hurricane database (HURDAT2) 1851-2018 and the Northeast and North Central Pacific hurricane database (HURDAT2) 1949-2018  at http://www.nhc.noaa.gov/data/#hurdat"),
-                h3("Created using RStudio and Shiny with shinydashboard, ggplot2, lubridate, stringr, dplyr and leaflet libraries")
+                h3("Saffir-Simpson Hurricane Wind Scale information from National Hurricane Center - https://www.nhc.noaa.gov/aboutsshws.php")
+                
             )
         )
     ) # end dashboardBody
