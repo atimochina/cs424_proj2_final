@@ -43,15 +43,14 @@ ui <- dashboardPage(
             # OVERVIEW TAB
             tabItem(
                 tabName = "overview",
-                h2("Overview of Atlantic Hurricanes"),
+                h2("Overview of Atlantic and Pacific Hurricane Data By Year and By Hurricane Category"),
                 fluidRow(
-                    box(title = "By Year", width = 6),
-                    box(title = "By Category", width = 6)
+                    box(title = "By Year", plotOutput("plot1",), width = 6),
+                    box(title = "By Category", plotOutput("plot2",), width = 6)
                 ),
-                h2("Overview of Pacific Hurricanes"),
                 fluidRow(
-                    box(title = "By Year", width = 6),
-                    box(title = "By Category", width = 6)
+                    box(title = "By Year", plotOutput("plot3",), width = 6),
+                    box(title = "By Category", plotOutput("plot4",), width = 6)
                 ),
             ),
             
@@ -93,6 +92,27 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
+    
+    #ATLANTIC OVERVIEW PLOTS
+    output$plot1 <- renderPlot({
+        ggplot(dfAtlantic, aes(x=Year)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Year")
+    })
+    
+    output$plot2 <- renderPlot({
+        ggplot(dfAtlantic, aes(x=dfAtlantic$`Hurricane Category`)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
+    })
+    
+    #PACIFIC OVERVIEW PLOTS
+    output$plot3 <- renderPlot({
+        ggplot(dfPacific, aes(x=Year)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Year")
+    })
+    
+    output$plot4 <- renderPlot({
+        ggplot(dfPacific, aes(x=dfPacific$`Hurricane Category`)) + geom_bar() +theme_light() +labs(y= "Number of Hurricanes", x = "Hurricane Category")
+    })
+    
+    
+    
    
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
