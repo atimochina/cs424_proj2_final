@@ -26,11 +26,11 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Overview", tabName = "overview", icon = icon("chart-bar")),
             menuItem("Map View", tabName = "map", icon = icon("map-marked-alt")),
-            menuItem("About", tabName = "about", icon = icon("info"))
+            menuItem("About", tabName = "about", icon = icon("info")),
             
             # NEED TO FIX 
             # drop down boxes - Year, Name, Date (Month and Day)
-            #selectInput("Name", "Select Name", c("Summary", listNameAtlantic, listNamePacific), selected = "Summary"),
+            selectInput("Name", "Select Name", c("Summary", listNameAtlantic, listNamePacific), selected = "Summary")
             #selectInput("Month", "Select Month", c("Summary", listMonthAtlantic, listMonthPacific), selected = "Summary"),
             #selectInput("Day", "Select Day", c("Summary", listDayAtlantic, listDayPacific), selected = "Summary"),
             #selectInput("Year", "Select Year", c("Summary", listYearAtlantic, listYearPacific), selected = "Summary")
@@ -65,7 +65,7 @@ ui <- dashboardPage(
                     fluidRow(
                         box(title = "Atlantic Map Options", width = 1),
                         box(title = "Atlantic Hurricanes List", width = 2),
-                        box(title = "Atlantic+Pacific Map", width = 6, leafletOutput("atlantic_map", height = 250)), # Testing map reactive for a bit
+                        box(title = "Atlantic+Pacific Map", width = 6),
                         box(title = "Pacific Map Options", width = 1),
                         box(title = "Pacific Hurricanes List", width = 2)
                     ),
@@ -103,17 +103,18 @@ server <- function(input, output) {
         #}
     })
     # Show By (optionA) - Top Ten Overall, Since 2005
-    #optionReact <- reactive({
-    #    if(optionA == `Top Ten Overall` && optionA != `Since 2005`){
-    #        return
-    #    }
-    #    else if (optionA != `Top Ten Overall` && optionA == `Since 2005`){
-    #        return
-    #    }
-    #    else if (optionA != `Top Ten Overall` && optionA != `Since 2005`){
-    #        return
-    #    }
-    #})
+    nameReact <- reactive({
+        # Testing
+        if(input$Option == "Summary"){
+            return (dfAtlantic)
+        }
+        else if(input$Name == listNameAtlantic){
+           return (dfAtlantic[dfAtlantic$Name == input$Name,])
+        }
+        else if(input$Name == listNamePacific){
+            return (dfPacific[dfPacific$Name == input$Name,])
+        }
+    })
     # Order By (filterA) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterReact <- reactive({
         #
@@ -154,23 +155,18 @@ server <- function(input, output) {
         ggplot(dfPacific, aes(x=dfPacific$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Category",
             subtitle = "1949-present",
             y= "Number of Hurricanes", x = "Hurricane Category")
-    })
+    }) 
     
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$atlantic_map <- renderLeaflet({
-        #optionData <- optionReact
+        #nameData <- nameReact
         filterData <- filterReact
-        # temporary color - however, getting "non-numeric argument to binary operator"
-        pal <- colorNumeric(
-            palette = "Blues",
-            domain = dfAtlantic$`Max Wind`)
         
         m <- m <- leaflet(dfAtlantic) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addLegend("bottomright", pal = pal
-                      , values = dfAtlantic$Name, opacity = 1) %>%
+            addLegend("bottomright", pal = pal, values = dfAtlantic$Name, opacity = 1) %>%
             addCircleMarkers(data = dfAtlantic,
                              lng = ~Longitude,
                              lat = ~Latitude,
