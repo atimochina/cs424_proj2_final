@@ -133,27 +133,27 @@ server <- function(input, output) {
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
         ggplot(dfAtlantic, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Year",
-                                                                                          subtitle = "1851-present",
-                                                                                          y= "Number of Hurricanes", x = "Year")
+            subtitle = "1851-present",
+            y= "Number of Hurricanes", x = "Year")
     })
     
     output$plot2 <- renderPlot({
         ggplot(dfAtlantic, aes(x=dfAtlantic$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Category",
-                                                                                                                     subtitle = "1851-present",
-                                                                                                                     y= "Number of Hurricanes", x = "Hurricane Category")
+            subtitle = "1851-present",
+            y= "Number of Hurricanes", x = "Hurricane Category")
     })
     
     #PACIFIC OVERVIEW PLOTS
     output$plot3 <- renderPlot({
         ggplot(dfPacific, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Year",
-                                                                                         subtitle = "1949-present",
-                                                                                         y= "Number of Hurricanes", x = "Year")
+            subtitle = "1949-present",
+            y= "Number of Hurricanes", x = "Year")
     })
     
     output$plot4 <- renderPlot({
         ggplot(dfPacific, aes(x=dfPacific$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Category",
-                                                                                                                   subtitle = "1949-present",
-                                                                                                                   y= "Number of Hurricanes", x = "Hurricane Category")
+            subtitle = "1949-present",
+            y= "Number of Hurricanes", x = "Hurricane Category")
     })
     
     # ====== MAP ====== Needs reactive for maps
@@ -161,11 +161,16 @@ server <- function(input, output) {
     output$atlantic_map <- renderLeaflet({
         #optionData <- optionReact
         filterData <- filterReact
+        # temporary color - however, getting "non-numeric argument to binary operator"
+        pal <- colorNumeric(
+            palette = "Blues",
+            domain = dfAtlantic$`Max Wind`)
         
         m <- m <- leaflet(dfAtlantic) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addLegend("bottomright", pal = pal, values = dfAtlantic$Name, opacity = 1) %>%
+            addLegend("bottomright", pal = pal
+                      , values = dfAtlantic$Name, opacity = 1) %>%
             addCircleMarkers(data = dfAtlantic,
                              lng = ~Longitude,
                              lat = ~Latitude,
