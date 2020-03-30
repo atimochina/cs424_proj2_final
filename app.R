@@ -26,7 +26,7 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Overview", tabName = "overview", icon = icon("chart-bar")),
             menuItem("Map View", tabName = "map", icon = icon("map-marked-alt")),
-            menuItem("About", tabName = "about", icon = icon("info")),
+            menuItem("About", tabName = "about", icon = icon("info"))
             
         )
     ), # end sidebar
