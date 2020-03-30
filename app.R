@@ -103,10 +103,7 @@ server <- function(input, output) {
     # ======== Reactive Atlantic ========
     # Name of hurricanes
     nameAReact <- reactive({
-        # Testing
-        #if(input$NameA == listNameAtlantic){
-           return (dfAtlantic[dfAtlantic$Name == input$NameA,])
-        #}
+       return (dfAtlantic[dfAtlantic$Name == input$NameA,])
     })
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterAReact <- reactive({
@@ -146,10 +143,7 @@ server <- function(input, output) {
     # ======== Reactive Pacific ========
     # Name of hurricanes
     namePReact <- reactive({
-        # Testing
-        #if(input$NameA == listNameAtlantic){
         return (dfPacific[dfPacific$Name == input$NameP,])
-        #}
     })
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterPReact <- reactive({
