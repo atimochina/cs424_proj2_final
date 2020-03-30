@@ -43,7 +43,14 @@ ui <- dashboardPage(
             # OVERVIEW TAB
             tabItem(
                 tabName = "overview",
-                h2("Overview of Atlantic and Pacific Hurricane Data"),
+                #h3("Overview of Atlantic and Pacific Hurricane Data"),
+                fluidRow(
+                    valueBox(textOutput("numATL"), "Atlantic Hurricanes Recorded Since 1851", icon = icon("tint"), color = "light-blue", width = 3),
+                    valueBox(textOutput("numPAC"), "Pacific Hurricanes Recorded Since 1949", icon = icon("tint"), color = "light-blue", width = 3),
+                    box(htmlOutput("catInfo1"), status = "primary", width = 4),
+                    box(htmlOutput("catInfo2"), status = "primary", width = 2)
+                ),
+                
                 fluidRow(
                     box(plotOutput("plot1",), width = 7),
                     box(plotOutput("plot2",), width = 5)
@@ -84,8 +91,10 @@ ui <- dashboardPage(
                 tabName = "about",
                 h2("Project Details"),
                 h3("Dashboard by Angela Timochina, Amy Ngo, and Desiree Murray for CS 424 at UIC"),
+                h3("Created using RStudio and Shiny with shinydashboard, ggplot2, lubridate, stringr, dplyr and leaflet libraries"),
                 h3("Data from the Atlantic hurricane database (HURDAT2) 1851-2018 and the Northeast and North Central Pacific hurricane database (HURDAT2) 1949-2018  at http://www.nhc.noaa.gov/data/#hurdat"),
-                h3("Created using RStudio and Shiny with shinydashboard, ggplot2, lubridate, stringr, dplyr and leaflet libraries")
+                h3("Saffir-Simpson Hurricane Wind Scale information from National Hurricane Center - https://www.nhc.noaa.gov/aboutsshws.php")
+                
             )
         )
     ) # end dashboardBody
@@ -95,6 +104,29 @@ ui <- dashboardPage(
 
 server <- function(input, output) {
     
+    #INFOBOXES
+    output$numATL <- renderText(length(unique(dfAtlantic$Name)))
+    output$numPAC <- renderText(length(unique(dfPacific$Name)))
+    
+    output$catInfo1 <- renderUI(HTML(
+        paste(
+            "<b>Hurricane Classification</b>", br(),
+            "The Saffir-Simpson Hurricane Wind Scale classifies hurricanes – Western Hemisphere tropical cyclones – 
+            that exceed the intensities of tropical depressions <b>TD</b> (<38 mph) and tropical storms <b>TS</b> (39-73 mph)
+            – into five categories distinguished by the intensities of their sustained winds."
+        )
+    ))
+    
+    output$catInfo2 <- renderUI(HTML(
+        paste(
+            "Category 1 <b>(C1)</b>: 74-95 mph", br(),
+            "Category 2 <b>(C2)</b>: 96-110 mph", br(),
+            "Category 3 <b>(C3)</b>: 111-129 mph", br(),
+            "Category 4 <b>(C4)</b>: 130-156 mph", br(),
+            "Category 5 <b>(C5)</b>: >156 mph"
+        )
+    ))
+    
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
         ggplot(dfAtlantic, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Year",
@@ -103,9 +135,9 @@ server <- function(input, output) {
     })
     
     output$plot2 <- renderPlot({
-        ggplot(dfAtlantic, aes(x=dfAtlantic$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Category",
+        ggplot(dfAtlantic, aes(x=dfAtlantic$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Classification",
                                                                                                                      subtitle = "1851-present",
-                                                                                                                     y= "Number of Hurricanes", x = "Hurricane Category")
+                                                                                                                     y= "Number of Hurricanes", x = "Hurricane Classification")
     })
     
     #PACIFIC OVERVIEW PLOTS
@@ -116,9 +148,9 @@ server <- function(input, output) {
     })
     
     output$plot4 <- renderPlot({
-        ggplot(dfPacific, aes(x=dfPacific$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Category",
+        ggplot(dfPacific, aes(x=dfPacific$`Hurricane Category`)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Pacific Hurricanes By Classification",
                                                                                                                    subtitle = "1949-present",
-                                                                                                                   y= "Number of Hurricanes", x = "Hurricane Category")
+                                                                                                                   y= "Number of Hurricanes", x = "Hurricane Classification")
     })
     
     #LINE GRAPH PLOTS
