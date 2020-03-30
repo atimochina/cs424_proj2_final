@@ -26,11 +26,11 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Overview", tabName = "overview", icon = icon("chart-bar")),
             menuItem("Map View", tabName = "map", icon = icon("map-marked-alt")),
-            menuItem("About", tabName = "about", icon = icon("info")),
+            menuItem("About", tabName = "about", icon = icon("info"))
             
             # NEED TO FIX 
             # drop down boxes - Year, Name, Date (Month and Day)
-            selectInput("Name", "Select Name", c("Summary", listNameAtlantic, listNamePacific), selected = "Summary")
+            #selectInput("Name", "Select Name", c("Summary", listNameAtlantic), selected = "Summary")
             #selectInput("Month", "Select Month", c("Summary", listMonthAtlantic, listMonthPacific), selected = "Summary"),
             #selectInput("Day", "Select Day", c("Summary", listDayAtlantic, listDayPacific), selected = "Summary"),
             #selectInput("Year", "Select Year", c("Summary", listYearAtlantic, listYearPacific), selected = "Summary")
@@ -63,10 +63,18 @@ ui <- dashboardPage(
                     
                     # SINGLE MAP WITH ATLANTIC LIST/OPTIONS AND PACIFIC LIST/OPTIONS
                     fluidRow(
-                        box(title = "Atlantic Map Options", width = 1),
+                        box(title = "Atlantic Map Options", width = 1, 
+                            selectInput("NameA", "Select Name", c(listNameAtlantic)),
+                            selectInput("FilterA", "Select Filter", c("Chronologically", "Alphabetically", "Max Wind Speed", "Minimum Pressure")),
+                            selectInput("ListA", "Select List", c("2018 Hurricanes", "Since 2005", "All Hurricanes", "Top 10", listNameAtlantic))
+                        ),
                         box(title = "Atlantic Hurricanes List", width = 2),
                         box(title = "Atlantic+Pacific Map", width = 6),
-                        box(title = "Pacific Map Options", width = 1),
+                        box(title = "Pacific Map Options", width = 1, 
+                            selectInput("NameP", "Select Name", c(listNamePacific)),
+                            selectInput("FilterP", "Select Filter", c("Chronologically", "Alphabetically", "Max Wind Speed", "Minimum Pressure")),
+                            selectInput("ListP", "Select List", c("2018 Hurricanes", "Since 2005", "All Hurricanes", "Top 10", listNamePacific))
+                        ),
                         box(title = "Pacific Hurricanes List", width = 2)
                     ),
                     
@@ -92,45 +100,93 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
-    # ======== Reactive ========
-    # Selection (selectA) - select all, unselect all
-    # Note: Select All means all buttons in option(below) is selected or not
-    selectReact <- reactive({
-        #if(selectA == `Select All`){
-        #    return
-        #} else {
-        #    return
+    # ======== Reactive Atlantic ========
+    # Name of hurricanes
+    nameAReact <- reactive({
+        # Testing
+        #if(input$NameA == listNameAtlantic){
+           return (dfAtlantic[dfAtlantic$Name == input$NameA,])
         #}
     })
-    # Show By (optionA) - Top Ten Overall, Since 2005
-    nameReact <- reactive({
-        # Testing
-        if(input$Option == "Summary"){
-            return (dfAtlantic)
-        }
-        else if(input$Name == listNameAtlantic){
-           return (dfAtlantic[dfAtlantic$Name == input$Name,])
-        }
-        else if(input$Name == listNamePacific){
-            return (dfPacific[dfPacific$Name == input$Name,])
-        }
-    })
-    # Order By (filterA) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
-    filterReact <- reactive({
+    # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
+    filterAReact <- reactive({
         #
-        if(filterA == `Chronologically`){
+        if(FilterA == `Chronologically`){
             return (dfAtlantic[sort(dfAtlantic$Date, factorsAsCharacter = TRUE)])
         }
-        else if(filterA == `Alphabetically`){
+        else if(FilterA == `Alphabetically`){
             return (dfAtlantic[sort(dfAtlantic$Name, factorsAsCharacter = TRUE)])
         }
-        else if(filterA == `Max Wind Speed`){
+        else if(FilterA == `Max Wind Speed`){
             return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE)])
         }
-        else if(filterA == `Minimum Pressure`){
+        else if(FilterA == `Minimum Pressure`){
             return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE)])
         }
     })
+    # List - Top Ten Overall, Since 2005, etc.
+    listAReact <- reactive({
+        if(input$ListA == "2018 Hurricanes"){
+            return (dfAtlantic[dfAtlantic$Year == 2018]) # hurricanges in 2018
+        }
+        else if(input$ListA == "Since 2005"){
+            return (dfAtlantic[dfAtlantic$Year >= 2005]) # hurricanes in 2005 and after
+        }
+        else if(input$ListA == "All Hurricanes"){
+            return (dfAtlantic) # all hurricanes
+        }
+        else if(intput$ListA == "Top 10"){
+            return () # return top 10 specific hurricane dataframe
+        }
+        else{
+            return (dfAtlantic[dfAtlantic$Name == input$ListA]) #specific hurricanes
+        }
+    })
+    
+    # ======== Reactive Pacific ========
+    # Name of hurricanes
+    namePReact <- reactive({
+        # Testing
+        #if(input$NameA == listNameAtlantic){
+        return (dfPacific[dfPacific$Name == input$NameP,])
+        #}
+    })
+    # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
+    filterPReact <- reactive({
+        #
+        if(FilterP == `Chronologically`){
+            return (dfPacific[sort(dfPacific$Date, factorsAsCharacter = TRUE)])
+        }
+        else if(FilterP == `Alphabetically`){
+            return (dfPacific[sort(dfPacific$Name, factorsAsCharacter = TRUE)])
+        }
+        else if(FilterP == `Max Wind Speed`){
+            return (dfAPacific[sort(dfPacific$`Max Wind`, decreasing = FALSE)])
+        }
+        else if(FilterP == `Minimum Pressure`){
+            return (dfPacific[sort(dfPacific$`Min Pressure`, decreasing = FALSE)])
+        }
+    })
+    # List - Top Ten Overall, Since 2005, etc.
+    listPReact <- reactive({
+        if(input$ListP == "2018 Hurricanes"){
+            return (dfPacific[dfPacific$Year == 2018]) # hurricanges in 2018
+        }
+        else if(input$ListP == "Since 2005"){
+            return (dfPacific[dfPacific$Year >= 2005]) # hurricanes in 2005 and after
+        }
+        else if(input$ListP == "All Hurricanes"){
+            return (dfPacific) # all hurricanes
+        }
+        else if(intput$ListP == "Top 10"){
+            return () # return top 10 specific hurricane dataframe
+        }
+        else{
+            return (dfPacific[dfPacific$Name == input$ListP]) #specific hurricanes
+        }
+    })
+    # =============================================
+    
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
         ggplot(dfAtlantic, aes(x=Year)) + geom_bar(fill = "#617a89") +theme_ipsum() +labs(title = "Atlantic Hurricanes By Year",
@@ -160,9 +216,6 @@ server <- function(input, output) {
     # ====== MAP ====== Needs reactive for maps
     # Atlantic
     output$atlantic_map <- renderLeaflet({
-        #nameData <- nameReact
-        filterData <- filterReact
-        
         m <- m <- leaflet(dfAtlantic) %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
