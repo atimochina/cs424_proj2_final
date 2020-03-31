@@ -9,13 +9,16 @@ https://cran.rstudio.com/
 
 
 Once you have downloaded the necessary software follow these steps
-Download the github zip file for this project by selecting the green button that says clone or download.
-Select download.
-Go to folder where zip file is downloaded and right click and select extract file.
-Go to location where extracted files are, and double click on app.R
-app.R should open in RStudio
-In RStudio, look for runApp button located near the top of program
-This will run the application
+
+1. Download the github zip file for this project by selecting the green button that says clone or download.
+
+2. Select download.
+
+3. Go to folder where zip file is downloaded and right click and select extract file.
+
+4. Go to location where extracted files are, and double click on app.R. If things are properly installed app.R should open in RStudio.
+
+5. In RStudio, look for runApp button located near the top of program. This will run the application
 
 NOTE: The data is already preprocessed for you and saved into an RData structure
 
