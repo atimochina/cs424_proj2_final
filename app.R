@@ -91,7 +91,8 @@ ui <- dashboardPage(
                         box(title = "Pacific Hurricanes List", width = 3)
                     ),
                     fluidRow(
-                        box(title = "Atlantic+Pacific Map", leafletOutput("map"), width = 12, height = 600)
+                        height = 600,
+                        box(title = "Atlantic+Pacific Map", leafletOutput("map"), width = 12)
                     )
                     
                     
@@ -115,6 +116,15 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
+    # COLOR PALETTE
+    pal25 <- c(
+        "#F8766D", "#00BFC4"
+    )
+    
+    pal <- colorFactor(
+        palette = pal25,
+        domain = dfAll$Basin
+    )
     
     #INFOBOXES
     output$numATL <- renderText(length(unique(dfAtlantic$Name)))
@@ -271,7 +281,9 @@ server <- function(input, output) {
         m <- leaflet() %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addCircleMarkers(data = dfAll, lng = ~Longitude, lat = ~Latitude, fillOpacity = 0.5,
+            addCircleMarkers(data = dfAll, lng = ~Longitude, lat = ~Latitude, 
+                            color = ~pal(dfAll$Basin), 
+                            fillOpacity = 0.5,
                             popup = (paste(dfAll$Name, "<br>",
                                     dfAll$`Max Wind`, "mph")),
                             radius = dfAll$`Max Wind`/8)
