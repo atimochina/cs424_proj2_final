@@ -136,10 +136,6 @@ server <- function(input, output) {
     ))
 
     # ======== Reactive Atlantic ========
-    # Name of hurricanes
-    nameAReact <- reactive({
-       return (dfAtlantic[dfAtlantic$Name == input$NameA,])
-    })
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterAReact <- reactive({
         #
@@ -159,10 +155,10 @@ server <- function(input, output) {
     # List - Top Ten Overall, Since 2005, etc.
     listAReact <- reactive({
         if(input$ListA == "2018 Hurricanes"){
-            return (dfAtlantic[dfAtlantic$Year == 2018]) # hurricanges in 2018
+            return (dfAtlantic[dfAtlantic$Year == 2018,]) # hurricanges in 2018
         }
         else if(input$ListA == "Since 2005"){
-            return (dfAtlantic[dfAtlantic$Year >= 2005]) # hurricanes in 2005 and after
+            return (dfAtlantic[dfAtlantic$Year >= 2005,]) # hurricanes in 2005 and after
         }
         else if(input$ListA == "All Hurricanes"){
             return (dfAtlantic) # all hurricanes
@@ -171,15 +167,12 @@ server <- function(input, output) {
             return (dfAtlantic10) # return top 10 specific hurricane dataframe
         }
         else{
-            return (dfAtlantic[dfAtlantic$Name == input$ListA]) #specific hurricanes
+            return (dfAtlantic[dfAtlantic$Name == input$ListA,]) #specific hurricanes
         }
     })
     
     # ======== Reactive Pacific ========
-    # Name of hurricanes
-    namePReact <- reactive({
-        return (dfPacific[dfPacific$Name == input$NameP,])
-    })
+
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterPReact <- reactive({
         #
@@ -199,10 +192,10 @@ server <- function(input, output) {
     # List - Top Ten Overall, Since 2005, etc.
     listPReact <- reactive({
         if(input$ListP == "2018 Hurricanes"){
-            return (dfPacific[dfPacific$Year == 2018]) # hurricanges in 2018
+            return (dfPacific[dfPacific$Year == 2018,]) # hurricanges in 2018
         }
         else if(input$ListP == "Since 2005"){
-            return (dfPacific[dfPacific$Year >= 2005]) # hurricanes in 2005 and after
+            return (dfPacific[dfPacific$Year >= 2005,]) # hurricanes in 2005 and after
         }
         else if(input$ListP == "All Hurricanes"){
             return (dfPacific) # all hurricanes
@@ -211,7 +204,7 @@ server <- function(input, output) {
             return (dfPacific10) # return top 10 specific hurricane dataframe
         }
         else{
-            return (dfPacific[dfPacific$Name == input$ListP]) #specific hurricanes
+            return (dfPacific[dfPacific$Name == input$ListP,]) #specific hurricanes
         }
     })
     # =============================================
