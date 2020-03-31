@@ -152,17 +152,17 @@ server <- function(input, output) {
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterAReact <- reactive({
         #
-        if(FilterA == `Chronologically`){
-            return (dfAtlantic[sort(dfAtlantic$Date, factorsAsCharacter = TRUE)])
+        if(input$FilterA == "Chronologically"){
+            return (dfAtlantic[sort(dfAtlantic$Date, decreasing = TRUE),])
         }
-        else if(FilterA == `Alphabetically`){
-            return (dfAtlantic[sort(dfAtlantic$Name, factorsAsCharacter = TRUE)])
+        else if(input$FilterA == "Alphabetically"){
+            return (dfAtlantic[sort(dfAtlantic$Name, decreasing = TRUE),])
         }
-        else if(FilterA == `Max Wind Speed`){
-            return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE)])
+        else if(input$FilterA == "Max Wind Speed"){
+            return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE),])
         }
-        else if(FilterA == `Minimum Pressure`){
-            return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE)])
+        else if(input$FilterA == "Minimum Pressure"){
+            return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE),])
         }
     })
     # List - Top Ten Overall, Since 2005, etc.
@@ -180,7 +180,7 @@ server <- function(input, output) {
             return (dfAtlantic10) # return top 10 specific hurricane dataframe
         }
         else{
-            return (dfAtlantic[dfAtlantic$Name == input$ListA,]) #specific hurricanes
+            return (unique(dfAtlantic[dfAtlantic$Name == input$ListA,])) #specific hurricanes
         }
     })
     
@@ -189,17 +189,17 @@ server <- function(input, output) {
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterPReact <- reactive({
         #
-        if(FilterP == `Chronologically`){
-            return (dfPacific[sort(dfPacific$Date, factorsAsCharacter = TRUE)])
+        if(input$FilterP == "Chronologically"){
+            return (dfPacific[sort(dfPacific$Date, factorsAsCharacter = TRUE),])
         }
-        else if(FilterP == `Alphabetically`){
-            return (dfPacific[sort(dfPacific$Name, factorsAsCharacter = TRUE)])
+        else if(input$FilterP == "Alphabetically"){
+            return (dfPacific[sort(dfPacific$Name, factorsAsCharacter = TRUE),])
         }
-        else if(FilterP == `Max Wind Speed`){
-            return (dfAPacific[sort(dfPacific$`Max Wind`, decreasing = FALSE)])
+        else if(input$FilterP == "Max Wind Speed"){
+            return (dfAPacific[sort(dfPacific$`Max Wind`, decreasing = FALSE),])
         }
-        else if(FilterP == `Minimum Pressure`){
-            return (dfPacific[sort(dfPacific$`Min Pressure`, decreasing = FALSE)])
+        else if(input$FilterP == "Minimum Pressure"){
+            return (dfPacific[sort(dfPacific$`Min Pressure`, decreasing = FALSE),])
         }
     })
     # List - Top Ten Overall, Since 2005, etc.
