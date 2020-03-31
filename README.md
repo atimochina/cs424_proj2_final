@@ -18,3 +18,6 @@ In RStudio, look for runApp button located near the top of program
 This will run the application
 
 NOTE: The data is already preprocessed for you and saved into an RData structure
+
+LINK TO PROJECT PAGE:
+https://sites.google.com/uic.edu/atimoc2cs424/projects/project-2?authuser=0
