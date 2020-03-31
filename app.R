@@ -206,16 +206,7 @@ server <- function(input, output) {
         }
     })
     # =============================================
-    #output$listAtlantic<- DT::renderDataTable(
-    #    DT::datatable({ 
-    #        newList <-  listAReact()
-    #        newFilter <- filterAReact()
-    #        atlanticList <- as.data.frame(table(newList[,newFilter$Name], dnn = list("Name")), responseName = "")
-    #    }, 
-    #    options = list(searching = FALSE, pageLength = 5, lengthChange = FALSE, order = list(list(1, 'desc'))
-    #    ), rownames = FALSE 
-    #    )
-    #)
+    
     
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
