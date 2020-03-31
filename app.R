@@ -38,7 +38,7 @@ ui <- dashboardPage(
             # OVERVIEW TAB
             tabItem(
                 tabName = "overview",
-
+                
                 #h3("Overview of Atlantic and Pacific Hurricane Data"),
                 fluidRow(
                     valueBox(textOutput("numATL"), "Atlantic Hurricanes Recorded Since 1851", icon = icon("tint"), color = "light-blue", width = 3),
@@ -52,11 +52,13 @@ ui <- dashboardPage(
                     box(plotOutput("plot2",), width = 5)
                 ),
                 fluidRow(
-
+                    
                     box(plotOutput("plot3",), width = 7),
                     box(plotOutput("plot4",), width = 5)
                 ),
             ),
+            
+            # LINE GRAPH TAB
             tabItem(tabName = "line",
                     # LINE GRAPH 1
                     fluidRow(
@@ -75,19 +77,22 @@ ui <- dashboardPage(
                     
                     # SINGLE MAP WITH ATLANTIC LIST/OPTIONS AND PACIFIC LIST/OPTIONS
                     fluidRow(
-                        box(title = "Atlantic Map Options", width = 1, 
+                        box(title = "Atlantic Map Options", width = 3, 
                             selectInput("NameA", "Select Name", c(listNameAtlantic)),
                             selectInput("FilterA", "Select Filter", c("Chronologically", "Alphabetically", "Max Wind Speed", "Minimum Pressure")),
                             selectInput("ListA", "Select List", c("2018 Hurricanes", "Since 2005", "All Hurricanes", "Top 10", listNameAtlantic))
                         ),
-                        box(title = "Atlantic Hurricanes List", width = 2),
-                        box(title = "Atlantic+Pacific Map", width = 6),
-                        box(title = "Pacific Map Options", width = 1, 
+                        box(title = "Atlantic Hurricanes List", width = 3),
+                        box(title = "Pacific Map Options", width = 3, 
                             selectInput("NameP", "Select Name", c(listNamePacific)),
                             selectInput("FilterP", "Select Filter", c("Chronologically", "Alphabetically", "Max Wind Speed", "Minimum Pressure")),
                             selectInput("ListP", "Select List", c("2018 Hurricanes", "Since 2005", "All Hurricanes", "Top 10", listNamePacific))
                         ),
-                        box(title = "Pacific Hurricanes List", width = 2)
+                        box(title = "Pacific Hurricanes List", width = 3)
+                    ),
+                    fluidRow(
+                        height = 600,
+                        box(title = "Atlantic+Pacific Map", leafletOutput("map"), width = 12)
                     )
                     
                     
@@ -111,7 +116,16 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
-   
+    # COLOR PALETTE
+    pal25 <- c(
+        "#F8766D", "#00BFC4"
+    )
+    
+    pal <- colorFactor(
+        palette = pal25,
+        domain = dfAll$Basin
+    )
+    
     #INFOBOXES
     output$numATL <- renderText(length(unique(dfAtlantic$Name)))
     output$numPAC <- renderText(length(unique(dfPacific$Name)))
@@ -134,7 +148,7 @@ server <- function(input, output) {
             "Category 5 <b>(C5)</b>: >156 mph"
         )
     ))
-
+    
     # ======== Reactive Atlantic ========
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterAReact <- reactive({
@@ -172,7 +186,7 @@ server <- function(input, output) {
     })
     
     # ======== Reactive Pacific ========
-
+    
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterPReact <- reactive({
         #
@@ -208,7 +222,7 @@ server <- function(input, output) {
         }
     })
     # =============================================
-
+    
     
     #ATLANTIC OVERVIEW PLOTS
     output$plot1 <- renderPlot({
@@ -236,7 +250,7 @@ server <- function(input, output) {
                                                                                                                    y= "Number of Hurricanes", x = "Hurricane Classification")
     })
     
-
+    
     #LINE GRAPH PLOTS
     #max wind
     output$line1 <- renderPlot({
@@ -245,7 +259,7 @@ server <- function(input, output) {
             geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Max Wind`),],aes(x = days, y = `Max Wind`, group = 1, color = "Pacific"))+
             scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
             labs(x = "Days in Year", y = "Wind Speed", title = "Maximum Wind Speed of Hurricane vs. Day in a Year") +
-            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
+            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1)) + theme_ipsum()
     })
     #min pressure
     output$line2 <- renderPlot({
@@ -254,28 +268,25 @@ server <- function(input, output) {
             geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Min Pressure`),] ,aes(x = days, y = `Min Pressure`, group = 1, color = "Pacific"))+
             scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
             labs(x = "Days in Year", y = "Pressure", title = "Minimum Pressure of Hurricane vs. Day in a Year") +
-            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
+            theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1)) + theme_ipsum()
     })
     
-
-    # ====== MAP ====== Needs reactive for maps
-    # Atlantic
-    output$atlantic_map <- renderLeaflet({
-        #nameData <- nameReact
-        filterData <- filterReact
+    
+    # MAP
+    output$map <- renderLeaflet({
+        dfA <- listAReact()
+        dfP <- listPReact()
+        dfAll <- rbind(dfA, dfP)
         
-        m <- m <- leaflet(dfAtlantic) %>%
+        m <- leaflet() %>%
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
-            addLegend("bottomright", pal = pal, values = dfAtlantic$Name, opacity = 1) %>%
-            addCircleMarkers(data = dfAtlantic,
-                             lng = ~Longitude,
-                             lat = ~Latitude,
-                             color = ~pal(dfAtlantic$Name),
+            addCircleMarkers(data = dfAll, lng = ~Longitude, lat = ~Latitude, 
+                             color = ~pal(dfAll$Basin), 
                              fillOpacity = 0.5,
-                             popup = (paste(dfAtlantic$Name, "<br>",
-                                            dfAtlantic$`Max Wind`, "mph")),
-                             radius = dfAtlantic$`Max Wind`/8)
+                             popup = (paste(dfAll$Name, "<br>",
+                                            dfAll$`Max Wind`, "mph")),
+                             radius = dfAll$`Max Wind`/8)
     })
     
 }
