@@ -57,8 +57,9 @@ ui <- dashboardPage(
                     box(plotOutput("plot4",), width = 5)
                 ),
             ),
-            
+   
             # LINE GRAPH TAB
+
             tabItem(tabName = "line",
                     # LINE GRAPH 1
                     fluidRow(
@@ -77,6 +78,7 @@ ui <- dashboardPage(
                     
                     # SINGLE MAP WITH ATLANTIC LIST/OPTIONS AND PACIFIC LIST/OPTIONS
                     fluidRow(
+
                         box(title = "Atlantic Map Options", width = 3, 
                             selectInput("NameA", "Select Name", c(listNameAtlantic)),
                             selectInput("FilterA", "Select Filter", c("Chronologically", "Alphabetically", "Max Wind Speed", "Minimum Pressure")),
@@ -93,6 +95,7 @@ ui <- dashboardPage(
                     fluidRow(
                         height = 600,
                         box(title = "Atlantic+Pacific Map", leafletOutput("map"), width = 12)
+
                     )
                     
                     
@@ -116,6 +119,7 @@ ui <- dashboardPage(
 #================================ SERVER ===================================
 
 server <- function(input, output) {
+
     # COLOR PALETTE
     pal25 <- c(
         "#F8766D", "#00BFC4"
@@ -125,6 +129,7 @@ server <- function(input, output) {
         palette = pal25,
         domain = dfAll$Basin
     )
+
     
     #INFOBOXES
     output$numATL <- renderText(length(unique(dfAtlantic$Name)))
@@ -133,9 +138,11 @@ server <- function(input, output) {
     output$catInfo1 <- renderUI(HTML(
         paste(
             "<b>Hurricane Classification</b>", br(),
+
             "The Saffir-Simpson Hurricane Wind Scale classifies hurricanes – Western Hemisphere tropical cyclones – 
             that exceed the intensities of tropical depressions <b>TD</b> (<38 mph) and tropical storms <b>TS</b> (39-73 mph)
             – into five categories distinguished by the intensities of their sustained winds."
+
         )
     ))
     
@@ -153,17 +160,17 @@ server <- function(input, output) {
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterAReact <- reactive({
         #
-        if(FilterA == `Chronologically`){
-            return (dfAtlantic[sort(dfAtlantic$Date, factorsAsCharacter = TRUE)])
+        if(input$FilterA == "Chronologically"){
+            return (dfAtlantic[sort(dfAtlantic$Date, decreasing = TRUE),])
         }
-        else if(FilterA == `Alphabetically`){
-            return (dfAtlantic[sort(dfAtlantic$Name, factorsAsCharacter = TRUE)])
+        else if(input$FilterA == "Alphabetically"){
+            return (dfAtlantic[sort(dfAtlantic$Name, decreasing = TRUE),])
         }
-        else if(FilterA == `Max Wind Speed`){
-            return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE)])
+        else if(input$FilterA == "Max Wind Speed"){
+            return (dfAtlantic[sort(dfAtlantic$`Max Wind`, decreasing = FALSE),])
         }
-        else if(FilterA == `Minimum Pressure`){
-            return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE)])
+        else if(input$FilterA == "Minimum Pressure"){
+            return (dfAtlantic[sort(dfAtlantic$`Min Pressure`, decreasing = FALSE),])
         }
     })
     # List - Top Ten Overall, Since 2005, etc.
@@ -181,7 +188,9 @@ server <- function(input, output) {
             return (dfAtlantic10) # return top 10 specific hurricane dataframe
         }
         else{
-            return (dfAtlantic[dfAtlantic$Name == input$ListA,]) #specific hurricanes
+
+            return (unique(dfAtlantic[dfAtlantic$Name == input$ListA,])) #specific hurricanes
+
         }
     })
     
@@ -190,17 +199,17 @@ server <- function(input, output) {
     # Filter By (Filter) - Chronologically, Alphabetically, Max Wind Speed, Minimum Pressure
     filterPReact <- reactive({
         #
-        if(FilterP == `Chronologically`){
-            return (dfPacific[sort(dfPacific$Date, factorsAsCharacter = TRUE)])
+        if(input$FilterP == "Chronologically"){
+            return (dfPacific[sort(dfPacific$Date, factorsAsCharacter = TRUE),])
         }
-        else if(FilterP == `Alphabetically`){
-            return (dfPacific[sort(dfPacific$Name, factorsAsCharacter = TRUE)])
+        else if(input$FilterP == "Alphabetically"){
+            return (dfPacific[sort(dfPacific$Name, factorsAsCharacter = TRUE),])
         }
-        else if(FilterP == `Max Wind Speed`){
-            return (dfAPacific[sort(dfPacific$`Max Wind`, decreasing = FALSE)])
+        else if(input$FilterP == "Max Wind Speed"){
+            return (dfAPacific[sort(dfPacific$`Max Wind`, decreasing = FALSE),])
         }
-        else if(FilterP == `Minimum Pressure`){
-            return (dfPacific[sort(dfPacific$`Min Pressure`, decreasing = FALSE)])
+        else if(input$FilterP == "Minimum Pressure"){
+            return (dfPacific[sort(dfPacific$`Min Pressure`, decreasing = FALSE),])
         }
     })
     # List - Top Ten Overall, Since 2005, etc.
@@ -260,6 +269,7 @@ server <- function(input, output) {
             scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
             labs(x = "Days in Year", y = "Wind Speed", title = "Maximum Wind Speed of Hurricane vs. Day in a Year") +
             theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1)) + theme_ipsum()
+
     })
     #min pressure
     output$line2 <- renderPlot({
@@ -272,6 +282,8 @@ server <- function(input, output) {
     })
     
     
+    # ====== MAP ====== Needs reactive for maps
+ 
     # MAP
     output$map <- renderLeaflet({
         dfA <- listAReact()
