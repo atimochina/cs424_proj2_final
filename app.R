@@ -1,4 +1,3 @@
-
 #libraries
 library(ggplot2)
 library(lubridate)
@@ -287,6 +286,7 @@ server <- function(input, output) {
                             popup = (paste(dfAll$Name, "<br>",
                                     dfAll$`Max Wind`, "mph")),
                             radius = dfAll$`Max Wind`/8)
+
     })
     
 }
