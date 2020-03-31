@@ -26,7 +26,8 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Overview", tabName = "overview", icon = icon("chart-bar")),
             menuItem("Map View", tabName = "map", icon = icon("map-marked-alt")),
-            menuItem("About", tabName = "about", icon = icon("info")),
+            menuItem("Line Graphs", tabName = "line",icon = icon("line")),
+            menuItem("About", tabName = "about", icon = icon("info"))
             
         )
     ), # end sidebar
@@ -56,14 +57,21 @@ ui <- dashboardPage(
                     box(plotOutput("plot4",), width = 5)
                 ),
             ),
-            
-            # MAP VIEW TAB
-            tabItem(tabName = "map",
+            tabItem(tabName = "line",
                     # LINE GRAPH 1
                     fluidRow(
                         box(width = 12,
                             plotOutput("line1"))
                     ),
+                    # LINE GRAPH 2
+                    fluidRow(
+                        box( width = 12,
+                             plotOutput("line2"))
+                    )
+            ),
+            
+            # MAP VIEW TAB
+            tabItem(tabName = "map",
                     
                     # SINGLE MAP WITH ATLANTIC LIST/OPTIONS AND PACIFIC LIST/OPTIONS
                     fluidRow(
@@ -80,13 +88,9 @@ ui <- dashboardPage(
                             selectInput("ListP", "Select List", c("2018 Hurricanes", "Since 2005", "All Hurricanes", "Top 10", listNamePacific))
                         ),
                         box(title = "Pacific Hurricanes List", width = 2)
-                    ),
-                    
-                    # LINE GRAPH 2
-                    fluidRow(
-                        box( width = 12,
-                             plotOutput("line2"))
                     )
+                    
+                    
                     
             ),
             
@@ -256,7 +260,7 @@ server <- function(input, output) {
             geom_line(data = atlanticDaysOfYearDF[!is.na(atlanticDaysOfYearDF$`Min Pressure`),],aes(x = days, y = `Min Pressure`, group = 1, color = "Atlantic"))+
             geom_line(data = pacificDaysOfYearDF[!is.na(pacificDaysOfYearDF$`Min Pressure`),] ,aes(x = days, y = `Min Pressure`, group = 1, color = "Pacific"))+
             scale_x_discrete(breaks=c("001","032","061","092","122","153","183","214","245","275","306","336"))+
-            labs(x = "Days in Year", y = "Wind Speed", title = "Minimum Pressure of Hurricane vs. Day in a Year") +
+            labs(x = "Days in Year", y = "Pressure", title = "Minimum Pressure of Hurricane vs. Day in a Year") +
             theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 60, hjust = 1))
     })
     
