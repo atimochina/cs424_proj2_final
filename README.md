@@ -17,5 +17,4 @@ app.R should open in RStudio
 In RStudio, look for runApp button located near the top of program
 This will run the application
 
-NOTE: The data is already preprocessed for you and save into an RData structure, but if you would like to see how data is
-processed that can be done by going into the data folder. Opening the python
+NOTE: The data is already preprocessed for you and saved into an RData structure
