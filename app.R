@@ -281,11 +281,12 @@ server <- function(input, output) {
             addTiles() %>%
             addProviderTiles(providers$CartoDB.Voyager) %>%
             addCircleMarkers(data = dfAll, lng = ~Longitude, lat = ~Latitude, 
-                             color = ~pal(dfAll$Basin), 
-                             fillOpacity = 0.5,
-                             popup = (paste(dfAll$Name, "<br>",
-                                            dfAll$`Max Wind`, "mph")),
-                             radius = dfAll$`Max Wind`/8)
+                            color = ~pal(dfAll$Basin), 
+                            fillOpacity = 0.5,
+                            popup = (paste(dfAll$Name, "<br>",
+                                    dfAll$`Max Wind`, "mph")),
+                            radius = dfAll$`Max Wind`/8)
+
     })
     
 }
